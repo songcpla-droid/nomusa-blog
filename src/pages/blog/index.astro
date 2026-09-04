@@ -9,9 +9,11 @@ import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 const posts = await getCollection('blog');
 const base = import.meta.env.BASE_URL;
 
-const byCategory = CATEGORIES.map(({ slug, label }) => ({
+const byCategory = CATEGORIES.map(({ slug, label, emoji, color }) => ({
 	slug,
 	label,
+	emoji,
+	color,
 	posts: posts.filter((p) => p.data.category === slug).sort((a, b) => a.data.number - b.data.number),
 }));
 ---
@@ -29,34 +31,55 @@ const byCategory = CATEGORIES.map(({ slug, label }) => ({
 				margin-bottom: 2.5rem;
 			}
 			.category h2 {
-				border-bottom: 2px solid rgb(var(--accent));
-				padding-bottom: 0.3rem;
-				margin-bottom: 1rem;
+				display: flex;
+				align-items: center;
+				gap: 0.4em;
+				margin-bottom: 0.9rem;
+			}
+			.category h2 .dot {
+				display: inline-block;
+				width: 0.6em;
+				height: 0.6em;
+				border-radius: 50%;
+				background: var(--cat-color, var(--accent));
 			}
 			ul {
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
-			}
-			li {
-				border-bottom: 1px dotted rgb(var(--gray-light));
+				display: flex;
+				flex-direction: column;
+				gap: 0.4em;
 			}
 			li a,
 			li .draft {
 				display: flex;
 				align-items: baseline;
 				gap: 0.75em;
-				padding: 0.6em 0.2em;
+				padding: 0.75em 0.9em;
 				text-decoration: none;
-				color: rgb(var(--black));
+				color: rgb(var(--ink));
+				border-radius: var(--radius-sm);
+				border: 1px solid transparent;
+			}
+			li a {
+				background: rgb(var(--bg-alt));
+				border-color: rgb(var(--border));
+				transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+			}
+			li a:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-sm);
+				border-color: var(--cat-color, var(--accent));
 			}
 			li a:hover .title {
-				color: rgb(var(--accent));
+				color: var(--accent-ink);
 			}
 			.num {
 				flex: none;
-				width: 2em;
-				color: rgb(var(--gray));
+				width: 1.6em;
+				color: var(--cat-color, rgb(var(--gray)));
+				font-weight: 700;
 				font-variant-numeric: tabular-nums;
 			}
 			.title {
@@ -69,6 +92,10 @@ const byCategory = CATEGORIES.map(({ slug, label }) => ({
 			}
 			.draft {
 				color: rgb(var(--gray));
+				border-color: rgb(var(--border));
+			}
+			.draft .num {
+				color: rgb(var(--gray));
 			}
 			.draft .title {
 				font-style: italic;
@@ -77,9 +104,9 @@ const byCategory = CATEGORIES.map(({ slug, label }) => ({
 				flex: none;
 				font-size: 0.75em;
 				color: rgb(var(--gray));
-				border: 1px solid rgb(var(--gray-light));
+				border: 1px solid rgb(var(--border));
 				border-radius: 999px;
-				padding: 0.1em 0.6em;
+				padding: 0.2em 0.7em;
 			}
 		</style>
 	</head>
@@ -88,9 +115,12 @@ const byCategory = CATEGORIES.map(({ slug, label }) => ({
 		<main>
 			<h1>블로그</h1>
 			{
-				byCategory.map(({ label, posts: categoryPosts }) => (
-					<section class="category">
-						<h2>{label}</h2>
+				byCategory.map(({ label, emoji, color, posts: categoryPosts }) => (
+					<section class="category" style={`--cat-color: ${color}`}>
+						<h2>
+							<span class="dot" />
+							{emoji} {label}
+						</h2>
 						<ul>
 							{categoryPosts.map((post) => (
 								<li>

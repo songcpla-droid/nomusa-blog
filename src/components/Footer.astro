@@ -4,13 +4,19 @@ const today = new Date();
 ---
 
 <footer>
-	&copy; {today.getFullYear()} {SITE_TITLE}. All rights reserved.
+	<p>&copy; {today.getFullYear()} {SITE_TITLE}</p>
 </footer>
 <style>
 	footer {
-		padding: 2em 1em 6em 1em;
-		background: linear-gradient(var(--gray-gradient)) no-repeat;
+		margin-top: 2em;
+		padding: 2.5em 1em 5em 1em;
+		background: rgb(var(--bg-alt));
+		border-top: 1px solid rgb(var(--border));
 		color: rgb(var(--gray));
 		text-align: center;
+	}
+	footer p {
+		margin: 0;
+		font-size: 0.9em;
 	}
 </style>

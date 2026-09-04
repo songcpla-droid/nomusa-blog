@@ -2,24 +2,99 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <!doctype html>
 <html lang="ko">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			.hero {
+				padding: 2em 0 1em;
+			}
+			.hero h1 {
+				margin-bottom: 0.3em;
+			}
+			.hero p.lead {
+				font-size: 1.15em;
+				color: rgb(var(--ink-soft, var(--ink)));
+				margin-bottom: 1.6em;
+			}
+			.card {
+				background: rgb(var(--bg-alt));
+				border: 1px solid rgb(var(--border));
+				border-radius: var(--radius);
+				padding: 1.6em;
+				margin-bottom: 2em;
+			}
+			.card p {
+				margin: 0;
+			}
+			.cta {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4em;
+				padding: 0.7em 1.4em;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				font-weight: 700;
+				text-decoration: none;
+				box-shadow: var(--shadow-sm);
+				transition: transform 0.15s ease, box-shadow 0.15s ease;
+			}
+			.cta:hover {
+				color: white;
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-md);
+			}
+			.categories {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.6em;
+				margin: 1.5em 0 0;
+				list-style: none;
+				padding: 0;
+			}
+			.categories li {
+				display: flex;
+				align-items: center;
+				gap: 0.4em;
+				padding: 0.5em 1em;
+				border-radius: 999px;
+				background: rgb(var(--bg-alt));
+				border: 1px solid rgb(var(--border));
+				font-size: 0.95em;
+			}
+		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>{SITE_TITLE}</h1>
-			<p>{SITE_DESCRIPTION}</p>
-			<p>
-				노무사로 일하며 사업, 직원, 시스템, 그리고 개인적인 고민들을 통해 느낀 단상들을 하나씩
-				남겨두는 공간입니다. <a href={`${import.meta.env.BASE_URL}blog/`}>블로그</a>에서 순서대로
-				읽어보실 수 있어요.
-			</p>
+			<div class="hero">
+				<h1>{SITE_TITLE}</h1>
+				<p class="lead">{SITE_DESCRIPTION}</p>
+				<div class="card">
+					<p>
+						노무사로 일하며 사업, 직원, 시스템, 그리고 개인적인 고민들을 통해 느낀 단상들을 하나씩
+						남겨두는 공간입니다.
+					</p>
+				</div>
+				<a class="cta" href={`${base}blog/`}>블로그 보러가기 →</a>
+				<ul class="categories">
+					{
+						CATEGORIES.map((c) => (
+							<li>
+								<span>{c.emoji}</span>
+								<span>{c.label}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
 		</main>
 		<Footer />
 	</body>
