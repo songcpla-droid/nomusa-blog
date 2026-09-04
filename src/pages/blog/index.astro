@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+
+const posts = await getCollection('blog');
+const base = import.meta.env.BASE_URL;
+
+const byCategory = CATEGORIES.map(({ slug, label }) => ({
+	slug,
+	label,
+	posts: posts.filter((p) => p.data.category === slug).sort((a, b) => a.data.number - b.data.number),
+}));
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={`블로그 | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				width: 720px;
+				max-width: calc(100% - 2em);
+			}
+			.category {
+				margin-bottom: 2.5rem;
+			}
+			.category h2 {
+				border-bottom: 2px solid rgb(var(--accent));
+				padding-bottom: 0.3rem;
+				margin-bottom: 1rem;
+			}
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			li {
+				border-bottom: 1px dotted rgb(var(--gray-light));
+			}
+			li a,
+			li .draft {
+				display: flex;
+				align-items: baseline;
+				gap: 0.75em;
+				padding: 0.6em 0.2em;
+				text-decoration: none;
+				color: rgb(var(--black));
+			}
+			li a:hover .title {
+				color: rgb(var(--accent));
+			}
+			.num {
+				flex: none;
+				width: 2em;
+				color: rgb(var(--gray));
+				font-variant-numeric: tabular-nums;
+			}
+			.title {
+				flex: 1;
+			}
+			.date {
+				flex: none;
+				color: rgb(var(--gray));
+				font-size: 0.9em;
+			}
+			.draft {
+				color: rgb(var(--gray));
+			}
+			.draft .title {
+				font-style: italic;
+			}
+			.badge {
+				flex: none;
+				font-size: 0.75em;
+				color: rgb(var(--gray));
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				padding: 0.1em 0.6em;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>블로그</h1>
+			{
+				byCategory.map(({ label, posts: categoryPosts }) => (
+					<section class="category">
+						<h2>{label}</h2>
+						<ul>
+							{categoryPosts.map((post) => (
+								<li>
+									{post.data.draft ? (
+										<span class="draft">
+											<span class="num">{post.data.number}</span>
+											<span class="title">{post.data.title}</span>
+											<span class="badge">준비중</span>
+										</span>
+									) : (
+										<a href={`${base}blog/${post.id}/`}>
+											<span class="num">{post.data.number}</span>
+											<span class="title">{post.data.title}</span>
+											{post.data.pubDate && (
+												<span class="date">
+													<FormattedDate date={post.data.pubDate} />
+												</span>
+											)}
+										</a>
+									)}
+								</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+		</main>
+		<Footer />
+	</body>
+</html>

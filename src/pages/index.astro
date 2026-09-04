@@ -1,0 +1,26 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>{SITE_TITLE}</h1>
+			<p>{SITE_DESCRIPTION}</p>
+			<p>
+				노무사로 일하며 사업, 직원, 시스템, 그리고 개인적인 고민들을 통해 느낀 단상들을 하나씩
+				남겨두는 공간입니다. <a href={`${import.meta.env.BASE_URL}blog/`}>블로그</a>에서 순서대로
+				읽어보실 수 있어요.
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>
